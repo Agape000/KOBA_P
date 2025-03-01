@@ -1,16 +1,27 @@
 <?php
-   session_start();
-   include "../includes/connect.php";
-//    the counting of all users in DB excludes admins
-   $users="select count(*) AS user_count from users where user_type !='Admin' ";
-   $result=mysqli_query($conn,$users);
-   $row=mysqli_fetch_assoc($result);
-   //counting the total business 
-   $businesses="select count(*) AS businesses_count  from businesses ";
-   $business=mysqli_query($conn, $businesses);
-   $b = mysqli_fetch_assoc($business)
-   
-   
+session_start();
+include "../includes/connect.php";
+
+// Optimized query to get multiple counts in one call
+$query = "
+    SELECT 
+        (SELECT COUNT(*) FROM users WHERE user_type != 'Admin') AS user_count,
+        (SELECT COUNT(*) FROM businesses) AS businesses_count,
+        (SELECT COUNT(*) FROM categories) AS categories_count,
+        (SELECT COUNT(*) FROM districts) AS districts_count,
+        (SELECT COUNT(*) FROM sectors) AS sectors_count
+";
+
+$result = mysqli_query($conn, $query);
+$counts = mysqli_fetch_assoc($result);
+
+if (!$result) {
+    die("Database query failed: " . mysqli_error($conn));
+}
+?>
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,11 +32,16 @@
     <title>KOBA Admin Dashboard</title>
     <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: Lato;
         margin: 0;
         padding: 0;
         display: flex;
         background: #f4f4f9;
+    }
+
+    h1 {
+        margin-left: 30px;
+        font-family: Lato;
     }
 
     .sidebar {
@@ -70,7 +86,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
-        margin-top: 20px;
+        margin-top: 60px;
         justify-content: center;
     }
 
@@ -92,36 +108,6 @@
     .card h3 {
         margin-bottom: 10px;
     }
-
-    .table-container {
-        margin-top: 30px;
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    table,
-    th,
-    td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-    }
-
-    th {
-        background: #002a80;
-        color: white;
-    }
-
-    tr:nth-child(even) {
-        background: #f4f4f9;
-    }
     </style>
 </head>
 
@@ -141,50 +127,31 @@
     </div>
 
     <div class="main-content">
-        <h1>Dashboard</h1>
+        <h1>Welcome to the Admin Dashboard</h1>
         <div class="cards">
             <div class="card">
                 <h3>Total Users</h3>
-                <p><?php echo $row['user_count']?></p>
+                <p><?php echo $counts['user_count']?></p>
             </div>
             <div class="card">
                 <h3>Total Businesses</h3>
-                <p><?php echo $b['businesses_count']?></p>
+                <p><?php echo $counts['businesses_count']?></p>
             </div>
             <div class="card">
                 <h3>Total Categories</h3>
-                <p>25</p>
+                <p><?php echo $counts['categories_count']?></p>
             </div>
             <div class="card">
                 <h3>Total Districts</h3>
-                <p>25</p>
+                <p><?php echo $counts['districts_count']?></p>
             </div>
             <div class="card">
                 <h3>Total Sectors</h3>
-                <p>25</p>
+                <p><?php echo $counts['sectors_count']?></p>
             </div>
         </div>
 
-        <div class="table-container">
-            <h2>Recent Users</h2>
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                </tr>
-                <tr>
-                    <td>John Doe</td>
-                    <td>john@example.com</td>
-                    <td>Active</td>
-                </tr>
-                <tr>
-                    <td>Jane Smith</td>
-                    <td>jane@example.com</td>
-                    <td>Inactive</td>
-                </tr>
-            </table>
-        </div>
+
     </div>
 </body>
 
