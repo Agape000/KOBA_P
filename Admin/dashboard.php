@@ -44,37 +44,6 @@ if (!$result) {
         font-family: Lato;
     }
 
-    .sidebar {
-        width: 250px;
-        background: #002a80;
-        color: white;
-        padding: 20px;
-        height: 100vh;
-        position: fixed;
-    }
-
-    .sidebar h2 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .sidebar ul {
-        list-style: none;
-        padding: 0;
-    }
-
-    .sidebar ul li {
-        padding: 15px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border-radius: 5px;
-    }
-
-    .sidebar ul li:hover {
-        background: #0044cc;
-    }
 
     .main-content {
         margin-left: 270px;
@@ -112,20 +81,8 @@ if (!$result) {
 </head>
 
 <body>
-    <div class="sidebar">
-        <h2>KOBA Admin</h2>
-        <ul>
-            <li>🏠 Dashboard</li>
-            <li>👥 Users</li>
-            <li>📂 Categories</li>
-            <li>🏘️ Districts</li>
-            <li>🏢 Sectors</li>
-            <li>🏢 Businesses</li>
-            <li>📊 Reports</li>
-            <li>⚙️ Settings</li>
-        </ul>
-    </div>
 
+    <?php  include "../includes/sidebar.php" ?>
     <div class="main-content">
         <h1>Welcome to the Admin Dashboard</h1>
         <div class="cards">
